@@ -1,6 +1,7 @@
+// takes in a hex string of the format "00ff00" and outputs its luminance (a number from 0 to 1)
 function hexToLuminance(hex) {
-  // takes in a hex string of the format "00ff00" and outputs its luminance (a number from 0 to 1)
-  var parsedHex = parseInt(hex, 16);
+  var withoutHash = hex.replace(/#/g, '');
+  var parsedHex = parseInt(withoutHash, 16);
   var r = (parsedHex >> 16) & 255;
   var g = (parsedHex >> 8) & 255;
   var b = parsedHex & 255;
@@ -30,11 +31,60 @@ function hexToLuminance(hex) {
   return l;
 }
 
+// takes in two luminance values and returns their contrast ratio.
 function contrastRatio(l1, l2) {
-  // takes in two luminance values and returns their contrast ratio.
   if (l2 < l1) {
     return (l1 + 0.05)/(l2 + 0.05);
   } else {
     return (l2 + 0.05) / (l1 + 0.05);
   }
+}
+
+// takes in an rgb value and returns the value in hex
+function rgbToHex(rgb) {
+
+}
+
+function hexToContrast(h1, h2) {
+  return contrastRatio(hexToLuminance(h1), hexToLuminance(h2));
+}
+
+function passesAANormal(ratio) {
+  if (ratio >= 4.5) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function hexToPassing(h1, h2) {
+  return passesAANormal(hexToContrast(h1, h2));
+}
+
+// when either input changes, recalculate if it passes
+
+$('input').on('input', function() {
+  updateExample(backgroundHex(), foregroundHex());
+
+  var ratio = hexToContrast(backgroundHex(), foregroundHex());
+  var passBool = hexToPassing(backgroundHex(), foregroundHex());
+
+  updateResult(ratio, passBool);
+});
+
+function updateExample(background, textColor) {
+  $(".example").css({"background-color": background, "color": textColor});
+}
+
+function updateResult(contrastValue, passBool) {
+  $(".ratio").text("Ratio is " + contrastValue);
+  $('.pass-bool').text(passBool);
+}
+
+function backgroundHex() {
+  return $("input[name='background-color']").val();
+}
+
+function foregroundHex() {
+  return $("input[name='foreground-color']").val();
 }
