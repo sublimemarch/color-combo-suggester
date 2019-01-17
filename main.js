@@ -88,3 +88,18 @@ function backgroundHex() {
 function foregroundHex() {
   return $("input[name='foreground-color']").val();
 }
+
+// suggesting a new color combo
+
+// get input about which color to change
+
+// figure out goal luminance for this color using luminance of other color and the contrast equation
+
+// for that color, generate 3 suggested colors
+
+// first one, hold red constant and get new color
+// get the goal red value, then plug it in with the existing B and G to get a new color
+// then we do the same thing with holding G and B constant
+
+// then, we have 3 new suggested colors! show them to the user visually and give the hex code
+
